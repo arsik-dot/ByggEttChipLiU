@@ -16,13 +16,16 @@ entity tt_um_arsik is
 end tt_um_arsik;
 
 architecture Behavioral of tt_um_arsik is
-    type state_t is (IDLE, ADDITION, SUBTRACTION, EXECUTE, WAIT_RELEASE);
+    type state_t is (IDLE, ADDITION, SUBTRACTION, WAIT_RELEASE, DIVIDE);
     signal state : state_t;
 
     signal inp : unsigned(5 downto 0); 
     signal operator : unsigned(1 downto 0);
 
     signal res : unsigned(7 downto 0) := (others => '0');
+
+    signal div_count : unsigned(7 downto 0) := (others => '0');
+    signal div_rest : unsigned(7 downto 0) := (others => '0');
 begin
 
     process (clk)
@@ -49,7 +52,8 @@ begin
                     elsif operator = "10" then
                         state <= SUBTRACTION;
                     else
-                        state <= EXECUTE;
+                        div_rest <= res;
+                        state <= DIVIDE;
                     end if;
                 
                 when ADDITION =>
@@ -60,9 +64,19 @@ begin
                     res <= res - resize(inp, 8);
                     state <= WAIT_RELEASE;
                 
-                when EXECUTE =>
-                    -- no function yet
-                    state <= WAIT_RELEASE;
+                when DIVIDE =>
+                    if inp = 0 then
+                        state <= WAIT_RELEASE;
+                    elsif div_rest >= resize(inp, 8) then
+                        div_rest <= div_rest - resize(inp, 8);
+                        div_count <= div_count + 1;
+                        state <= DIVIDE;
+                    else
+                        res <= div_count;
+                        div_count <= (others => '0');
+                        div_rest <= (others => '0');
+                        state <= WAIT_RELEASE;
+                    end if;
 
                 when WAIT_RELEASE =>
                     if operator = "00" then
@@ -70,6 +84,7 @@ begin
                     else 
                         state <= WAIT_RELEASE;
                     end if;
+                
             end case;
         end if;
     end process;        
