@@ -14,6 +14,7 @@ Explain how your project works
 ## How to test
 
 Explain how to use your project
+make LIU=yes
 
 ## External hardware
 
