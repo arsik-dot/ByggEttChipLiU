@@ -19,8 +19,8 @@ architecture Behavioral of tt_um_arsik is
     type state_t is (IDLE, ADDITION, SUBTRACTION, WAIT_RELEASE, DIVIDE);
     signal state : state_t;
 
-    signal inp : unsigned(5 downto 0); 
-    signal operator : unsigned(1 downto 0);
+    signal inp : unsigned(5 downto 0) := (others => '0'); 
+    signal operator : unsigned(1 downto 0) := (others => '0');
 
     signal res : unsigned(7 downto 0) := (others => '0');
 
@@ -41,6 +41,8 @@ begin
         if rst_n = '0' then
             state <= IDLE;
             res <= (others => '0');
+            div_count <= (others => '0');
+            div_rest <= (others => '0');
 
         elsif rising_edge(clk) then
             case state is
