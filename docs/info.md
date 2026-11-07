@@ -21,9 +21,5 @@ We divide by 4: inp = 11000011, out = 00000100  (because of integer division, 18
 
 ## How to test
 
-Explain how to use your project
-make LIU=yes
+in terminal: "make LIU=yes" in the "test" file. It starts python test doing some operations and asserting them. 
 
-## External hardware
-
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
